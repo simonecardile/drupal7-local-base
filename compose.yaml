@@ -1,0 +1,49 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/apache-php/Dockerfile
+    ports:
+      - "${APACHE_HOST_PORT}:80"
+    volumes:
+      - ./web:/var/www/html
+    environment:
+      DRUPAL_VERSION: ${DRUPAL_VERSION}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+    depends_on:
+      mysql:
+        condition: service_started
+    networks:
+      - drupal_net
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - drupal_net
+
+  adminer:
+    image: adminer
+    depends_on:
+      - mysql
+    ports:
+      - "${ADMINER_HOST_PORT}:8080"
+    networks:
+      - drupal_net
+
+volumes:
+  mysql_data:
+
+networks:
+  drupal_net:
+    driver: bridge
