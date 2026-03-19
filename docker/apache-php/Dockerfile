@@ -19,5 +19,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY docker/php/drupal.ini /usr/local/etc/php/conf.d/drupal.ini
+COPY docker/apache-php/servername.conf /etc/apache2/conf-available/servername.conf
+
+RUN a2enconf servername
 
 WORKDIR /var/www/html

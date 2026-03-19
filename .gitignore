@@ -1,3 +1,6 @@
 .env
+web/sites/default/settings.php
+web/sites/default/files/*
+!web/sites/default/files/.gitkeep
 .DS_Store
 Thumbs.db
